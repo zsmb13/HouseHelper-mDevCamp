@@ -2,7 +2,6 @@ package com.kotlinconf.workshop.househelper
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import com.kotlinconf.workshop.househelper.di.AppGraph
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
@@ -13,7 +12,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -22,6 +20,7 @@ import androidx.savedstate.compose.serialization.serializers.SnapshotStateListSe
 import com.kotlinconf.workshop.househelper.dashboard.DashboardScreen
 import com.kotlinconf.workshop.househelper.devices.CameraDetailsScreen
 import com.kotlinconf.workshop.househelper.devices.LightDetailsScreen
+import com.kotlinconf.workshop.househelper.di.AppGraph
 import com.kotlinconf.workshop.househelper.navigation.CameraDetails
 import com.kotlinconf.workshop.househelper.navigation.Dashboard
 import com.kotlinconf.workshop.househelper.navigation.LightDetails
@@ -38,16 +37,22 @@ import househelper.shared.generated.resources.onboarding_welcome
 import kotlinx.coroutines.channels.Channel
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Handles links in the househelper://{type}/{id} format
+ *
+ * Examples:
+ * househelper://light/living_room_floor_lamp
+ * househelper://camera/bathroom_security_camera
+ */
 fun navigateToDeepLink(uri: String) {
-    deepLinkUris.trySend(uri)
+    if (!uri.startsWith("househelper://")) return
 }
 
-private val deepLinkUris = Channel<String>(capacity = 1)
+private val deeplinkRequests = Channel<Screen>(capacity = 1)
 
 @Composable
-@Preview
 fun App(appGraph: AppGraph) {
-    // TODO Task 14: customize theme
+    // TODO Task 12: customize theme
     MaterialTheme {
         CompositionLocalProvider(LocalMetroViewModelFactory provides appGraph.metroViewModelFactory) {
             Surface(
@@ -110,7 +115,7 @@ fun App(appGraph: AppGraph) {
                                 deviceId = it.deviceId,
                                 onNavigateUp = { backStack.removeLastOrNull() },
                                 onNavigateToRename = { deviceId ->
-                                    // TODO Task 9: navigate to rename
+                                    // TODO Task 8: navigate to rename
                                 },
                             )
                         }

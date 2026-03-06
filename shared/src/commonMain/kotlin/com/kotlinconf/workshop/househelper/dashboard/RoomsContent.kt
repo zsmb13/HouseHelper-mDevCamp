@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -46,7 +51,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kotlinconf.workshop.househelper.CameraDevice
 import com.kotlinconf.workshop.househelper.Device
 import com.kotlinconf.workshop.househelper.DeviceConstants
@@ -58,8 +62,8 @@ import com.kotlinconf.workshop.househelper.RoomId
 import com.kotlinconf.workshop.househelper.SwitchDevice
 import com.kotlinconf.workshop.househelper.ThermostatDevice
 import com.kotlinconf.workshop.househelper.Toggleable
-import com.kotlinconf.workshop.househelper.data.DemoHouseService
 import com.kotlinconf.workshop.househelper.utils.onRightClick
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 import org.jetbrains.compose.resources.painterResource
 import kotlin.math.roundToInt
 
@@ -69,26 +73,26 @@ fun RoomsContent(
     onNavigateToLightDetails: (DeviceId) -> Unit,
     onNavigateToCameraDetails: (DeviceId) -> Unit,
 ) {
-    // TODO Task 15: update content inset
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
+        contentPadding = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom).asPaddingValues(),
     ) {
         items(rooms) { room ->
-            // TODO Task 8: use Metro APIs
-            val roomViewModel: RoomViewModel = viewModel(key = room.id.value) {
-                RoomViewModel(DemoHouseService(), room.id)
+            val roomViewModel = assistedMetroViewModel<RoomViewModel, RoomViewModel.Factory>(
+                key = room.id.value
+            ) {
+                create(room.id)
             }
             val devices by roomViewModel.devices.collectAsStateWithLifecycle()
 
-            // TODO Task 3: introduce proper state for expanding sections
-            var expanded = true
+            var expanded by remember { mutableStateOf(true) }
 
             RoomSection(
                 room = room,
                 expanded = expanded,
                 devices = devices,
                 onExpand = { isExpanded ->
-                    // TODO Task 3: update expanded state here
+                    expanded = isExpanded
                 },
                 onClick = { device -> roomViewModel.onDeviceClicked(device) },
                 onLongClick = { device ->
@@ -121,7 +125,7 @@ internal fun RoomSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onExpand(!expanded) } // TODO Task 17: improve accessibility
+                .clickable { onExpand(!expanded) } // TODO Task 13: improve accessibility
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -131,7 +135,7 @@ internal fun RoomSection(
                 modifier = Modifier
                     .padding(end = 8.dp)
                     .graphicsLayer {
-                        // TODO Task 11: animate rotation
+                        // TODO Task 10: animate rotation
                         rotationZ = if (expanded) 0f else -90f
                     }
             )
@@ -141,7 +145,7 @@ internal fun RoomSection(
             )
         }
 
-        // TODO Task 12: animate visibility change
+        // TODO Task 11: animate visibility change
         if (expanded) {
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -178,7 +182,7 @@ private fun DeviceCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight(
-                            // TODO Task 11: animate height change
+                            // TODO Task 10: animate height change
                             if (!device.isOn) {
                                 0f
                             } else {
@@ -296,7 +300,7 @@ private fun DeviceCardContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .semantics { // TODO Task 17: merge semantics here
+            .semantics { // TODO Task 13: merge semantics here
                 if (device is Toggleable) {
                     role = Role.Switch
                     toggleableState = ToggleableState(device.isOn)

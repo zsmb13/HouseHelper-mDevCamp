@@ -53,7 +53,7 @@ fun RenameDeviceScreen(
         )
     }
 
-    // TODO Task 10: wrap this Column with a background
+    // TODO Task 9: wrap this Column with a background
     Column(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -37,6 +37,7 @@ class RoomViewModel(
         }
     }
 
+
     @AssistedFactory
     @ManualViewModelAssistedFactoryKey(Factory::class)
     @ContributesIntoMap(AppScope::class)

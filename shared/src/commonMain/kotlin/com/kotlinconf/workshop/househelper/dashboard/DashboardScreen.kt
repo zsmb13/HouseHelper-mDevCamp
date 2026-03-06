@@ -1,9 +1,15 @@
 package com.kotlinconf.workshop.househelper.dashboard
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.SecondaryTabRow
@@ -17,11 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kotlinconf.workshop.househelper.DeviceId
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import househelper.shared.generated.resources.Res
 import househelper.shared.generated.resources.dashboard_tab_rooms
 import househelper.shared.generated.resources.dashboard_tab_settings
 import org.jetbrains.compose.resources.stringResource
-import dev.zacsweers.metrox.viewmodel.metroViewModel
 
 @Composable
 fun DashboardScreen(
@@ -34,7 +40,7 @@ fun DashboardScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing) // TODO Task 15: update insets
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Top))
     ) {
         SecondaryTabRow(
             selectedTabIndex = selectedTabIndex,
@@ -52,18 +58,26 @@ fun DashboardScreen(
             )
         }
 
-        // TODO Task 13: animate content changes
-        when (selectedTabIndex) {
-            0 -> {
-                val rooms by viewModel.rooms.collectAsStateWithLifecycle()
-                RoomsContent(
-                    rooms = rooms,
-                    onNavigateToLightDetails = onNavigateToLightDetails,
-                    onNavigateToCameraDetails = onNavigateToCameraDetails,
-                )
+        AnimatedContent(
+            targetState = selectedTabIndex,
+            transitionSpec = {
+                val direction = if (targetState > initialState) 1 else -1
+                slideInHorizontally { width -> direction * width } togetherWith
+                        slideOutHorizontally { width -> -direction * width }
             }
+        ) { tabIndex ->
+            when (tabIndex) {
+                0 -> {
+                    val rooms by viewModel.rooms.collectAsStateWithLifecycle()
+                    RoomsContent(
+                        rooms = rooms,
+                        onNavigateToLightDetails = onNavigateToLightDetails,
+                        onNavigateToCameraDetails = onNavigateToCameraDetails,
+                    )
+                }
 
-            1 -> SettingsContent()
+                1 -> SettingsContent()
+            }
         }
     }
 }

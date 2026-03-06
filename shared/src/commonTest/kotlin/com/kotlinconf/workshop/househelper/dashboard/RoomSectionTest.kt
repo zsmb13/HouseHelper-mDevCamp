@@ -4,8 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.v2.runComposeUiTest
 import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.LightDevice
@@ -13,8 +11,6 @@ import com.kotlinconf.workshop.househelper.Room
 import com.kotlinconf.workshop.househelper.RoomId
 import com.kotlinconf.workshop.househelper.ThermostatDevice
 import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalTestApi::class)
 class RoomSectionTest {
@@ -57,7 +53,7 @@ class RoomSectionTest {
             )
         }
 
-        // TODO Task 18: implement test
+        // TODO Task 14: implement test
 
         // Initially collapsed
         // Click on the room header to expand

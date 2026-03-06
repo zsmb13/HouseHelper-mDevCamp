@@ -34,11 +34,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kotlinconf.workshop.househelper.CameraDevice
 import com.kotlinconf.workshop.househelper.DeviceId
 import com.kotlinconf.workshop.househelper.RoomId
-import com.kotlinconf.workshop.househelper.data.DemoHouseService
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,8 +45,10 @@ fun CameraDetailsScreen(
     deviceId: DeviceId,
     onNavigateUp: () -> Unit,
     onNavigateToRename: (DeviceId) -> Unit,
-    // TODO Task 8: use Metro APIs
-    viewModel: CameraDetailsViewModel = viewModel { CameraDetailsViewModel(DemoHouseService(), deviceId) },
+    viewModel: CameraDetailsViewModel =
+        assistedMetroViewModel<CameraDetailsViewModel, CameraDetailsViewModel.Factory> {
+            create(deviceId)
+        },
 ) {
     // TODO Task 5: replace this hardcoded value with data from the ViewModel
     val device = CameraDevice(deviceId, "Fake Camera", roomId = RoomId(""))

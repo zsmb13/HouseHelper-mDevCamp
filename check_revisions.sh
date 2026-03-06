@@ -13,7 +13,7 @@ if [ -z "$STARTER_COMMIT" ]; then
 fi
 
 # Get all commits from the starter commit to solutions
-COMMITS=$(git log --reverse --format="%H" $STARTER_COMMIT..solutions)
+COMMITS=$(git log --reverse --format="%H" $STARTER_COMMIT..solutions-mdevcamp)
 COMMITS="$STARTER_COMMIT $COMMITS"  # Include the starter commit
 
 # Function to run the application and stop it after 10 seconds
@@ -112,6 +112,6 @@ done
 
 echo "All revisions checked successfully!"
 
-# Check out the solutions branch (quiet mode)
-git checkout -q solutions
-echo "solutions branch is now checked out."
+# Check out the solutions-mdevcamp branch (quiet mode)
+git checkout -q solutions-mdevcamp
+echo "solutions-mdevcamp branch is now checked out."
