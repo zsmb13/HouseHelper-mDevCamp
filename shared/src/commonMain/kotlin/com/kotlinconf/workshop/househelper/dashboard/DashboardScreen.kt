@@ -63,7 +63,7 @@ fun DashboardScreen(
             transitionSpec = {
                 val direction = if (targetState > initialState) 1 else -1
                 slideInHorizontally { width -> direction * width } togetherWith
-                        slideOutHorizontally { width -> -direction * width }
+                    slideOutHorizontally { width -> -direction * width }
             }
         ) { tabIndex ->
             when (tabIndex) {
